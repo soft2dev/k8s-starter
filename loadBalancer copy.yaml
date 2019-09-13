@@ -1,0 +1,35 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: phpk8s-lb
+spec:
+  selector:
+    matchLabels:
+      type: app
+      service: phpk8s-lb
+  template:
+    metadata:
+      labels:
+        type: app
+        service: phpk8s-lb
+    spec:
+      containers:
+      - name: phpk8s-lb
+        image: soft2dev/php-docker-heml:latest
+        ports:
+        - containerPort: 80
+          protocol: TCP
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: phpk8s-lb
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    type: app
+    service: phpk8s-lb

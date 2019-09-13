@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: phpk8s-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - host: helm.videomoode.eu
+    http:
+      paths: 
+      - path: /
+        backend:
+          serviceName: phpk8s-ingress
+          servicePort: 80
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: phpk8s-ingress
+spec:
+  selector:
+    matchLabels:
+      type: app
+      service: phpk8s-ingress
+  template:
+    metadata:
+      labels:
+        type: app
+        service: phpk8s-ingress
+    spec:
+      containers:
+      - name: phpk8s-ingress
+        image: soft2dev/php-docker-heml:latest
+        ports:
+        - containerPort: 80
+          protocol: TCP
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: phpk8s-ingress
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    type: app
+    service: phpk8s-ingress
