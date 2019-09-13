@@ -1,4 +1,10 @@
 apiVersion: apps/v1beta2
+- task: Kubernetes@1
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    command: 
+    secretType: 'dockerRegistry'
+    containerRegistryType: 'Azure Container Registry'
 kind: Deployment
 metadata:
   name: phpk8s-lb
